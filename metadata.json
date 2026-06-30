@@ -1,0 +1,6 @@
+{
+  "name": "Dinâmicas de Português na Prática",
+  "description": "Página de vendas premium e interativa com mais de 400 dinâmicas e atividades prontas para professores de Língua Portuguesa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
