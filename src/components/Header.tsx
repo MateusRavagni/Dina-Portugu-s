@@ -265,24 +265,6 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
           </div>
         </div>
 
-        {/* Video Chapters Navigation */}
-        <div id="video-chapters" className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-2xl mx-auto">
-          {slides.map((slide, idx) => (
-            <button
-              key={idx}
-              onClick={() => handleSlideSelect(idx)}
-              className={`p-2 rounded-lg text-left transition-all duration-200 border text-xs cursor-pointer ${
-                currentSlide === idx
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-md font-bold'
-                  : 'bg-white text-gray-600 border-gray-100 hover:bg-gray-50'
-              }`}
-            >
-              <div className="font-mono text-[9px] uppercase tracking-wider opacity-80">Parte 0{idx + 1}</div>
-              <div className="truncate mt-0.5 font-medium">{slide.highlight}</div>
-            </button>
-          ))}
-        </div>
-
       </div>
     </header>
   );
