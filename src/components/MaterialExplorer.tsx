@@ -321,7 +321,7 @@ export default function MaterialExplorer({ onScrollToOffers }: MaterialExplorerP
             {/* Bottom drive actions summary banner */}
             <div className="mt-4 border-t border-slate-800 pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
               <span className="text-center sm:text-left">
-                Gostou desta dinâmica? Ela é apenas <strong className="text-white">1 das 400</strong> do nosso acervo completo!
+                Gostou desta dinâmica? Ela é apenas <strong className="text-white">1 das 100</strong> do nosso acervo completo!
               </span>
               <button
                 onClick={onScrollToOffers}

@@ -1,61 +1,201 @@
-import { useState, useEffect } from 'react';
-import { Star, Play, Pause, ChevronRight, Folder, FileText, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Star, ChevronRight, Upload, Settings, Link2, RotateCcw, Check, HelpCircle, Film } from 'lucide-react';
+
+// IndexedDB Helper for persistent local video cache
+const DB_NAME = 'VideoCacheDB';
+const STORE_NAME = 'videos';
+const DB_KEY = 'sarau_video';
+
+function initDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function saveVideoToDB(blob: Blob): Promise<void> {
+  return initDB().then((db) => {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.put(blob, DB_KEY);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
+function loadVideoFromDB(): Promise<Blob | null> {
+  return initDB().then((db) => {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.get(DB_KEY);
+      request.onsuccess = () => resolve(request.result || null);
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
+function clearVideoFromDB(): Promise<void> {
+  return initDB().then((db) => {
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const store = transaction.objectStore(STORE_NAME);
+      const request = store.delete(DB_KEY);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
+  });
+}
+
+// Helpers for Video Type Resolution
+function getVideoType(url: string): 'youtube' | 'vimeo' | 'direct' {
+  if (!url) return 'direct';
+  if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
+  if (url.includes('vimeo.com')) return 'vimeo';
+  return 'direct';
+}
+
+function getYouTubeEmbedUrl(url: string): string | null {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) 
+    ? `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1&loop=1&playlist=${match[2]}` 
+    : null;
+}
+
+function getVimeoEmbedUrl(url: string): string | null {
+  if (!url) return null;
+  const regExp = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
+  const match = url.match(regExp);
+  return match ? `https://player.vimeo.com/video/${match[3]}?autoplay=1&muted=1&loop=1` : null;
+}
+
+const DEFAULT_VIDEO_PATHS = [
+  '/video.mp4',
+  '/sarau.mp4',
+  '/sarau-poetico.mp4',
+  '/sarau_poetico.mp4',
+  '/video_sarau.mp4',
+];
 
 interface HeaderProps {
   onScrollToOffers: () => void;
 }
 
 export default function Header({ onScrollToOffers }: HeaderProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [videoProgress, setVideoProgress] = useState(0);
+  const [videoSrc, setVideoSrc] = useState<string>('');
+  const [videoError, setVideoError] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [fallbackIndex, setFallbackIndex] = useState<number>(-1);
+  
+  // Custom states for setting URL directly
+  const [inputUrl, setInputUrl] = useState<string>('');
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [showSaveSuccess, setShowSaveSuccess] = useState(false);
 
-  const slides = [
-    {
-      title: "Como funciona o seu novo acervo?",
-      subtitle: "Todas as pastas organizadas no Google Drive para download imediato",
-      visual: "drive",
-      highlight: "Praticidade e Organização"
-    },
-    {
-      title: "Material 100% Editável e Imprimível",
-      subtitle: "Arquivos em Word (editável) e PDF de alta qualidade prontos para imprimir",
-      visual: "activities",
-      highlight: "+500 Exercícios Práticos"
-    },
-    {
-      title: "Aulas lúdicas e engajadoras",
-      subtitle: "Dinâmicas passo a passo que fazem os alunos amarem gramática e literatura",
-      visual: "games",
-      highlight: "Engajamento Real em Sala"
-    },
-    {
-      title: "Planejamento BNCC completo",
-      subtitle: "Modelos com códigos de competência prontos para preencher e assinar",
-      visual: "bncc",
-      highlight: "Economize 10+ horas semanais"
-    }
-  ];
-
+  // Initialize from cache or custom URL
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPlaying) {
-      interval = setInterval(() => {
-        setVideoProgress((prev) => {
-          if (prev >= 100) {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % slides.length);
-            return 0;
-          }
-          return prev + 1.5;
-        });
-      }, 100);
+    const savedUrl = localStorage.getItem('sarau_video_url');
+    if (savedUrl) {
+      setVideoSrc(savedUrl);
+      setInputUrl(savedUrl);
+      setVideoError(false);
+      setFallbackIndex(-1);
+      return;
     }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
 
-  const handleSlideSelect = (index: number) => {
-    setCurrentSlide(index);
-    setVideoProgress(0);
+    loadVideoFromDB()
+      .then((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          setVideoSrc(url);
+          setVideoError(false);
+          setFallbackIndex(-1);
+        } else {
+          // Default: start attempting local paths from index 0
+          setFallbackIndex(0);
+          setVideoSrc(DEFAULT_VIDEO_PATHS[0]);
+        }
+      })
+      .catch(() => {
+        setFallbackIndex(0);
+        setVideoSrc(DEFAULT_VIDEO_PATHS[0]);
+      });
+  }, []);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        setIsSaving(true);
+        const url = URL.createObjectURL(file);
+        setVideoSrc(url);
+        setVideoError(false);
+        setFallbackIndex(-1);
+        localStorage.removeItem('sarau_video_url'); // Prefer File
+        setInputUrl('');
+        await saveVideoToDB(file);
+        setShowSaveSuccess(true);
+        setTimeout(() => setShowSaveSuccess(false), 3000);
+      } catch (err) {
+        console.error('Erro ao salvar vídeo localmente:', err);
+      } finally {
+        setIsSaving(false);
+      }
+    }
+  };
+
+  const handleUrlSave = () => {
+    if (inputUrl.trim()) {
+      localStorage.setItem('sarau_video_url', inputUrl.trim());
+      setVideoSrc(inputUrl.trim());
+      setVideoError(false);
+      setFallbackIndex(-1);
+      clearVideoFromDB().catch(console.error); // Prefer URL
+      setShowSaveSuccess(true);
+      setTimeout(() => setShowSaveSuccess(false), 3000);
+    }
+  };
+
+  const handleResetToDefault = async () => {
+    try {
+      localStorage.removeItem('sarau_video_url');
+      setInputUrl('');
+      await clearVideoFromDB();
+      setFallbackIndex(0);
+      setVideoSrc(DEFAULT_VIDEO_PATHS[0]);
+      setVideoError(false);
+      setShowSaveSuccess(true);
+      setTimeout(() => setShowSaveSuccess(false), 3000);
+    } catch (err) {
+      console.error('Erro ao restaurar padrão:', err);
+    }
+  };
+
+  const handleVideoError = () => {
+    if (fallbackIndex >= 0 && fallbackIndex < DEFAULT_VIDEO_PATHS.length - 1) {
+      const nextIndex = fallbackIndex + 1;
+      setFallbackIndex(nextIndex);
+      setVideoSrc(DEFAULT_VIDEO_PATHS[nextIndex]);
+      setVideoError(false);
+    } else if (fallbackIndex === DEFAULT_VIDEO_PATHS.length - 1) {
+      setFallbackIndex(-1);
+      // Failover to our beautiful public ready-made Mixkit video
+      setVideoSrc('https://assets.mixkit.co/videos/preview/mixkit-turning-the-pages-of-a-book-4680-large.mp4');
+      setVideoError(false);
+    } else {
+      setVideoError(true);
+    }
   };
 
   return (
@@ -71,7 +211,7 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
         <div className="inline-flex items-center gap-1.5 bg-blue-50/80 backdrop-blur-sm border border-blue-100/80 px-4 py-1.5 rounded-full shadow-sm hover:scale-105 transition-transform duration-300 mb-6">
           <div className="flex text-amber-400">
             {[...Array(5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-amber-400" />
+              <Star key={i} className="w-4 h-4 fill-amber-400 animate-pulse" style={{ animationDelay: `${i * 150}ms` }} />
             ))}
           </div>
           <span className="text-xs sm:text-sm font-semibold text-gray-800">
@@ -86,7 +226,7 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
 
         {/* Hero Subtitle */}
         <p className="text-base sm:text-xl text-gray-600 mt-6 max-w-2xl mx-auto leading-relaxed">
-          Chega de perder horas planejando. <strong className="text-gray-900 font-semibold">+400 dinâmicas</strong>, atividades práticas, slides editáveis e recursos lúdicos de português (Ensino Fundamental II e Médio) prontos para aplicar.
+          Chega de perder horas planejando. <strong className="text-gray-900 font-semibold">+100 dinâmicas</strong>, atividades práticas, dinâmicas prontas para aula e recursos lúdicos de português (Ensino Fundamental II e Médio) prontos para aplicar.
         </p>
 
         {/* Action button inside Hero */}
@@ -105,164 +245,67 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
           </span>
         </div>
 
-        {/* Video Prompt */}
-        <div className="mt-12 mb-4 flex items-center justify-center gap-1.5 text-blue-600 font-bold text-sm sm:text-base animate-bounce">
-          <span>👇 Assista à demonstração do material</span>
+        {/* Subtitle / Call to action */}
+        <div className="mt-12 mb-6 flex flex-col items-center justify-center text-center gap-2">
+          <span className="text-blue-600 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
+            🎬 Assista ao vídeo de demonstração do Sarau Poético
+          </span>
+          <p className="text-xs text-gray-500 max-w-md">
+            Veja na prática como funciona essa metodologia ativa que engaja os alunos do início ao fim.
+          </p>
         </div>
 
-        {/* Interactive Video Player */}
+        {/* Real Video Player Container */}
         <div 
           id="demo-video-player"
-          className="relative max-w-2xl mx-auto aspect-video bg-gray-900 rounded-2xl overflow-hidden shadow-2xl border-4 border-white group/video"
+          className="relative max-w-md mx-auto bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-4 border-white flex items-center justify-center aspect-[3/4]"
         >
-          {/* Custom Video Playback States */}
-          <div className="absolute inset-0 flex flex-col justify-between p-4 z-20 bg-gradient-to-b from-black/50 via-transparent to-black/75">
-            
-            {/* Top header within mock video */}
-            <div className="flex items-center justify-between opacity-0 group-hover/video:opacity-100 transition-opacity duration-300">
-              <span className="bg-black/40 text-white text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-md backdrop-blur-sm">
-                Tour_Do_Material_Completo_2026.mp4
-              </span>
-              <span className="bg-emerald-500 text-white text-[10px] font-mono px-1.5 py-0.5 rounded font-bold animate-pulse">
-                AO VIVO
-              </span>
+          {!videoError && videoSrc ? (
+            <div className="relative w-full h-full">
+              {getVideoType(videoSrc) === 'youtube' && getYouTubeEmbedUrl(videoSrc) ? (
+                <iframe
+                  src={getYouTubeEmbedUrl(videoSrc)!}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  title="YouTube video player"
+                />
+              ) : getVideoType(videoSrc) === 'vimeo' && getVimeoEmbedUrl(videoSrc) ? (
+                <iframe
+                  src={getVimeoEmbedUrl(videoSrc)!}
+                  className="w-full h-full"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title="Vimeo video player"
+                />
+              ) : (
+                <video
+                  key={videoSrc}
+                  src={videoSrc}
+                  className="w-full h-full object-contain"
+                  controls
+                  playsInline
+                  preload="auto"
+                  autoPlay
+                  muted
+                  controlsList="nodownload"
+                  disablePictureInPicture
+                  onContextMenu={(e) => e.preventDefault()}
+                  onError={handleVideoError}
+                >
+                  Seu navegador não suporta a tag de vídeo.
+                </video>
+              )}
             </div>
-
-            {/* Middle Big Play Button if paused */}
-            {!isPlaying && (
-              <button 
-                onClick={() => setIsPlaying(true)}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white p-5 rounded-full shadow-2xl hover:scale-110 transition-all duration-300"
-                id="play-button-center"
-              >
-                <Play className="w-8 h-8 fill-white ml-1" />
-              </button>
-            )}
-
-            {/* Screen Content Simulator (Rendered dynamically as a simulated video) */}
-            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-slate-900 to-indigo-950 flex flex-col items-center justify-center text-white p-6 select-none">
-              
-              {slides[currentSlide].visual === "drive" && (
-                <div className="text-center animate-fade-in w-full max-w-md">
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <Folder className="w-14 h-14 text-yellow-400 fill-yellow-400/20" />
-                    <Folder className="w-16 h-16 text-blue-400 fill-blue-400/20 shadow-xl" />
-                    <Folder className="w-14 h-14 text-green-400 fill-green-400/20" />
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-3 inline-flex items-center gap-2 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    <span className="font-mono text-xs text-blue-200">Google Drive Organizado</span>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white">
-                    400+ Dinâmicas por Temas BNCC
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-300 mt-2">
-                    Gramática contextualizada, Literatura ativa, Redação prática e muito mais!
-                  </p>
-                </div>
-              )}
-
-              {slides[currentSlide].visual === "activities" && (
-                <div className="text-center animate-fade-in w-full max-w-md">
-                  <div className="bg-white text-gray-800 rounded-xl p-4 shadow-xl max-w-xs mx-auto text-left transform -rotate-2 border border-gray-100">
-                    <div className="flex items-center gap-2 border-b border-gray-100 pb-2 mb-2">
-                      <FileText className="w-5 h-5 text-blue-500" />
-                      <span className="text-xs font-bold font-mono">Sujeito_e_Predicado.pdf</span>
-                    </div>
-                    <div className="space-y-1.5 text-[10px]">
-                      <div className="h-2 w-3/4 bg-gray-200 rounded"></div>
-                      <div className="h-2 w-1/2 bg-gray-200 rounded"></div>
-                      <div className="p-2 bg-blue-50 border border-blue-100 rounded mt-1">
-                        <span className="font-bold text-[9px] text-blue-700">Tirinha do Chico Bento:</span>
-                        <div className="h-1.5 w-full bg-gray-300/60 rounded mt-1"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white mt-4">
-                    Exercícios Práticos Prontos
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-300 mt-1">
-                    Gabarito passo a passo integrado para correção instantânea.
-                  </p>
-                </div>
-              )}
-
-              {slides[currentSlide].visual === "games" && (
-                <div className="text-center animate-fade-in w-full max-w-md">
-                  <div className="flex justify-center gap-3 mb-4">
-                    <div className="bg-amber-500 text-white font-black text-xs px-3 py-2 rounded-lg rotate-6 shadow-lg">
-                      TABULEIRO DA CRASE
-                    </div>
-                    <div className="bg-indigo-600 text-white font-black text-xs px-3 py-2 rounded-lg -rotate-6 shadow-lg">
-                      FLASHCARDS FIGURAS
-                    </div>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white">
-                    Metodologia Ativa de Verdade
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-300 mt-2">
-                    Seus alunos vão implorar por mais aulas de português e literatura.
-                  </p>
-                  <div className="mt-3 flex justify-center gap-1 text-yellow-400">
-                    {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400" />)}
-                  </div>
-                </div>
-              )}
-
-              {slides[currentSlide].visual === "bncc" && (
-                <div className="text-center animate-fade-in w-full max-w-md">
-                  <div className="bg-emerald-950/60 border border-emerald-500/30 rounded-xl p-4 text-left max-w-sm mx-auto flex items-start gap-3">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-400 shrink-0" />
-                    <div>
-                      <span className="text-[10px] text-emerald-400 font-bold font-mono">PLANEJAMENTO BNCC</span>
-                      <h4 className="font-bold text-xs sm:text-sm text-white">Habilidades descritas nos códigos exatos:</h4>
-                      <p className="text-[10px] text-gray-300 mt-1 font-mono">EF69LP55, EM13LP06, EM13LP08...</p>
-                    </div>
-                  </div>
-                  <h3 className="text-lg sm:text-xl font-extrabold text-white mt-4">
-                    Chega de Burocracia Estressante
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-300 mt-1">
-                    Insira seu nome, assine e entregue para o coordenador pedagógico.
-                  </p>
-                </div>
-              )}
-
+          ) : (
+            /* SIMPLE SLEEK MINIMALIST ERROR/LOADING STATE */
+            <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center p-6 text-white text-center">
+              <Film className="w-12 h-12 text-slate-700 animate-pulse mb-3" />
+              <p className="text-xs text-slate-500 font-mono">
+                {videoError ? 'Vídeo temporariamente indisponível' : 'Carregando demonstração...'}
+              </p>
             </div>
-
-            {/* Bottom Controls Panel */}
-            <div className="bg-black/60 backdrop-blur-sm rounded-xl p-2.5 flex items-center justify-between gap-4">
-              <button 
-                onClick={() => setIsPlaying(!isPlaying)}
-                className="bg-white text-gray-900 p-2 rounded-lg hover:scale-105 transition-transform"
-                id="play-pause-btn"
-              >
-                {isPlaying ? <Pause className="w-4 h-4 fill-black" /> : <Play className="w-4 h-4 fill-black" />}
-              </button>
-
-              {/* Progress Bar inside Video */}
-              <div className="flex-1">
-                <div className="flex justify-between items-center text-[10px] text-gray-300 font-mono mb-1">
-                  <span>Módulo {currentSlide + 1} de {slides.length}</span>
-                  <span className="bg-white/10 px-1 py-0.2 rounded text-yellow-300 font-bold">
-                    {slides[currentSlide].highlight}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-700/60 h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-blue-500 h-full rounded-full transition-all duration-100 ease-linear"
-                    style={{ width: `${videoProgress}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Volume/Time Mock */}
-              <div className="text-[10px] text-gray-400 font-mono hidden sm:block text-right shrink-0">
-                <span>02:14 / 04:30</span>
-              </div>
-            </div>
-
-          </div>
+          )}
         </div>
 
       </div>

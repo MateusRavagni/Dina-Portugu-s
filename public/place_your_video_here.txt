@@ -1,0 +1,2 @@
+Cole aqui o seu arquivo de vídeo com o nome "video.mp4".
+O reprodutor na página inicial irá carregar e exibir este vídeo automaticamente.

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { CheckoutState } from '../types';
 import { 
   X, 
-  ChevronRight, 
   CreditCard, 
   CheckCircle2, 
   Smartphone, 
@@ -12,7 +11,8 @@ import {
   Check, 
   Clock, 
   Download,
-  Lock
+  Lock,
+  ArrowRight
 } from 'lucide-react';
 
 interface CheckoutModalProps {
@@ -38,7 +38,7 @@ export default function CheckoutModal({ state, onClose }: CheckoutModalProps) {
   // Errors
   const [errors, setErrors] = useState<string | null>(null);
 
-  // PIX countdown timer
+  // Countdown timer for PIX simulation
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (step === 2 && paymentMethod === 'pix' && pixTimeLeft > 0) {
@@ -50,24 +50,22 @@ export default function CheckoutModal({ state, onClose }: CheckoutModalProps) {
   }, [step, paymentMethod, pixTimeLeft]);
 
   const handleNextStep = () => {
-    if (step === 1) {
-      if (!name.trim() || !email.trim() || !whatsapp.trim()) {
-        setErrors('Por favor, preencha todos os campos obrigatórios para receber o material.');
-        return;
-      }
-      if (!email.includes('@')) {
-        setErrors('Insira um endereço de e-mail válido.');
-        return;
-      }
-      setErrors(null);
-      setStep(2);
+    if (!name.trim() || !whatsapp.trim() || !email.trim()) {
+      setErrors('Preencha os campos obrigatórios para continuar.');
+      return;
     }
+    if (!email.includes('@')) {
+      setErrors('Insira um e-mail válido.');
+      return;
+    }
+    setErrors(null);
+    setStep(2);
   };
 
   const handleConfirmPayment = () => {
     if (paymentMethod === 'card') {
       if (!cardNum.trim() || !cardExp.trim() || !cardCvv.trim() || !cardName.trim()) {
-        setErrors('Por favor, preencha todos os dados do cartão de crédito.');
+        setErrors('Preencha todos os dados do cartão de crédito.');
         return;
       }
     }
@@ -89,7 +87,6 @@ export default function CheckoutModal({ state, onClose }: CheckoutModalProps) {
   };
 
   const handleDownloadSample = () => {
-    // Generate a beautiful mock dynamics PDF content in a text file
     const sampleText = `=====================================================
 DINÂMICAS DE PORTUGUÊS NA PRÁTICA - AMOSTRA DO ACERVO
 =====================================================
@@ -113,9 +110,6 @@ PASSO A PASSO:
    - "O paciente queixou-se de dor duas vezes na semana"
 3. Dê 15 minutos para decifrar os erros e reescrever na norma padrão.
 4. Peça para cada equipe apresentar a sua resolução do "crime".
-
-DICA DO PROFESSOR:
-Crie um bônus de 0.5 ponto para quem fotografar e trouxer um erro real visto na rua!
 
 -----------------------------------------------------
 DINÂMICA 2: BATALHA CAMPAL DA REGÊNCIA E CRASE
@@ -151,128 +145,121 @@ Desejamos a você domingos mais livres e aulas incríveis!
   return (
     <div 
       id="checkout-overlay"
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
     >
       <div 
         id="checkout-modal-body"
-        className="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-gray-100 overflow-hidden relative flex flex-col justify-between my-8 animate-fade-in"
+        className="bg-white rounded-[28px] w-full max-w-md shadow-2xl border border-slate-100 overflow-hidden relative flex flex-col my-auto animate-fade-in"
       >
         
-        {/* Modal Header */}
-        <div className="bg-slate-900 text-white p-5 flex items-center justify-between">
-          <div>
-            <span className="text-[10px] uppercase font-mono tracking-wider text-blue-400">Checkout Seguro</span>
-            <h3 className="font-extrabold text-lg sm:text-xl text-white">
-              {state.packageType === 'complete' ? 'Pacote Completo VIP' : 'Pacote Básico Essencial'}
-            </h3>
-          </div>
-          
-          <button 
-            onClick={onClose}
-            className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition"
-            id="close-checkout-btn"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        {/* Modal Close Button (Floating Top Right) */}
+        <button 
+          onClick={onClose}
+          className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200/80 p-1.5 rounded-full transition-all duration-200 z-30 cursor-pointer"
+          id="close-checkout-btn"
+        >
+          <X className="w-4 h-4 stroke-[2.5]" />
+        </button>
 
-        {/* Steps Breadcrumb */}
-        <div className="bg-slate-50 px-5 py-3 border-b border-gray-200/50 flex items-center justify-between text-xs font-mono text-gray-500">
-          <span className={`flex items-center gap-1 ${step >= 1 ? 'text-blue-600 font-bold' : ''}`}>
-            {step > 1 ? <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-50" /> : '1.'} Identificação
-          </span>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-          <span className={`flex items-center gap-1 ${step >= 2 ? 'text-blue-600 font-bold' : ''}`}>
-            {step > 2 ? <CheckCircle2 className="w-4 h-4 text-emerald-500 fill-emerald-50" /> : '2.'} Pagamento
-          </span>
-          <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-          <span className={`flex items-center gap-1 ${step >= 3 ? 'text-blue-600 font-bold' : ''}`}>
-            3. Download
-          </span>
+        {/* Dynamic header summary */}
+        <div className="p-6 bg-[#f8fafc] border-b border-slate-100 text-center">
+          <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-2">
+            <Lock className="w-3 h-3" />
+            CHECKOUT 100% SEGURO
+          </div>
+          <h3 className="font-black text-xl text-slate-900 tracking-tight leading-snug">
+            {state.packageType === 'complete' ? 'Pacote Completo VIP' : 'Pacote Básico'}
+          </h3>
+          <p className="text-sm font-semibold text-[#16a34a] mt-1">
+            Valor Único: R$ {state.price.toFixed(2).replace('.', ',')}
+          </p>
         </div>
 
         {/* Modal Content */}
-        <div className="p-6 flex-1 min-h-[300px] text-gray-700">
+        <div className="p-6 text-slate-700 space-y-4">
           
           {errors && (
-            <div className="bg-red-50 text-red-700 p-3 rounded-xl text-xs font-semibold mb-4 border border-red-100">
+            <div className="bg-rose-50 text-rose-700 p-3 rounded-xl text-xs font-bold border border-rose-100">
               ⚠️ {errors}
             </div>
           )}
 
-          {/* STEP 1: Identification Form */}
+          {/* STEP 1: Quick details */}
           {step === 1 && (
             <div className="space-y-4">
-              <p className="text-xs text-gray-500 leading-normal">
-                Insira seus dados abaixo para liberarmos o seu link de download exclusivo no seu WhatsApp e e-mail.
-              </p>
+              <div className="text-center">
+                <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                  Informe seus dados para receber o link de acesso aos materiais em PDF.
+                </p>
+              </div>
 
               <div className="space-y-3">
                 <div className="relative">
-                  <User className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
+                  <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="text"
-                    placeholder="Nome Completo"
+                    placeholder="Seu Nome Completo"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-9 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                     id="checkout-name-input"
                   />
                 </div>
 
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="email"
-                    placeholder="E-mail de Entrega (onde chegarão os PDFs)"
+                    placeholder="Seu melhor E-mail"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-9 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                     id="checkout-email-input"
                   />
                 </div>
 
                 <div className="relative">
-                  <Smartphone className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
+                  <Smartphone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
                   <input
                     type="tel"
-                    placeholder="WhatsApp com DDD (ex: 11 99999-9999)"
+                    placeholder="WhatsApp com DDD"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
-                    className="w-full pl-9 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                     id="checkout-whatsapp-input"
                   />
                 </div>
               </div>
 
-              {/* Package Summary Box */}
-              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center justify-between text-xs sm:text-sm">
-                <div>
-                  <span className="text-gray-500 block">Produto Selecionado</span>
-                  <strong className="text-blue-900">
-                    {state.packageType === 'complete' ? 'Pacote Completo (+6 Bônus Inclusos)' : 'Pacote Básico Essencial'}
-                  </strong>
-                </div>
-                <div className="text-right">
-                  <span className="text-gray-500 block">Total Único</span>
-                  <strong className="text-lg text-emerald-600 font-extrabold font-mono">
-                    R$ {state.price.toFixed(2).replace('.', ',')}
-                  </strong>
-                </div>
+              {/* Bullet indicators */}
+              <div className="flex justify-center gap-1.5 pt-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
               </div>
+
+              {/* Big objective CTA */}
+              <button
+                onClick={handleNextStep}
+                className="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-black text-sm sm:text-base rounded-2xl shadow-md hover:shadow-blue-500/20 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 transform active:scale-95"
+                id="checkout-next-btn"
+              >
+                Prosseguir para o Pagamento
+                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+              </button>
             </div>
           )}
 
-          {/* STEP 2: Simulated Payment Selection */}
+          {/* STEP 2: Simplificado Método de Pagamento */}
           {step === 2 && (
             <div className="space-y-4">
               
-              {/* Tabs */}
-              <div className="grid grid-cols-2 gap-2 bg-gray-100 p-1 rounded-xl text-xs font-bold">
+              {/* Simple Tabs switcher */}
+              <div className="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-xl text-xs font-bold">
                 <button
                   onClick={() => setPaymentMethod('pix')}
                   className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                    paymentMethod === 'pix' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                    paymentMethod === 'pix' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
                   }`}
                   id="tab-pix-btn"
                 >
@@ -282,7 +269,7 @@ Desejamos a você domingos mais livres e aulas incríveis!
                 <button
                   onClick={() => setPaymentMethod('card')}
                   className={`py-2 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer ${
-                    paymentMethod === 'card' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                    paymentMethod === 'card' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
                   }`}
                   id="tab-card-btn"
                 >
@@ -291,39 +278,40 @@ Desejamos a você domingos mais livres e aulas incríveis!
                 </button>
               </div>
 
-              {/* PIX Render */}
+              {/* Render PIX view */}
               {paymentMethod === 'pix' && (
                 <div className="space-y-4 text-center">
-                  <div className="flex flex-col items-center">
-                    {/* Simulated QR Code */}
-                    <div className="bg-slate-100 p-4 rounded-2xl inline-block border-2 border-slate-200 shadow-inner">
-                      <svg className="w-32 h-32 text-gray-900" viewBox="0 0 100 100" fill="currentColor">
+                  <div className="flex flex-col items-center justify-center bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    
+                    {/* Simulated elegant minimalist QR code */}
+                    <div className="bg-white p-2 rounded-xl shadow-sm border border-slate-200 select-none">
+                      <svg className="w-24 h-24 text-slate-800" viewBox="0 0 100 100" fill="currentColor">
                         <path d="M5 5h30v30H5V5zm4 4v22h22V9H9zm57-4h30v30H66V5zm4 4v22h22V9H70zM5 66h30v30H5V66zm4 4v22h22V70H9zm57-4h30v30H66V66zm4 4v22h22V70H70zm-26-47h8v8h-8V19zm13 13h8v8h-8V32zm-13 13h8v8h-8V45zm26 0h8v8h-8V45zm13 13h8v8h-8V58zm-39 0h8v8h-8V58zm13 13h8v8h-8V71zm-26 12h8v8h-8V83z" />
                       </svg>
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-xs text-amber-600 font-mono font-bold mt-3 bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
+                    <div className="flex items-center gap-1.5 text-xs text-amber-600 font-bold mt-2.5">
                       <Clock className="w-3.5 h-3.5 animate-spin" />
-                      <span>Aguardando Pix: {formatPixTime(pixTimeLeft)}</span>
+                      <span>Expira em: {formatPixTime(pixTimeLeft)}</span>
                     </div>
                   </div>
 
                   <div className="space-y-2 text-left">
-                    <span className="text-xs text-gray-400 font-mono block">CÓDIGO PIX COPIA E COLA</span>
+                    <span className="text-[11px] text-slate-400 font-extrabold block uppercase tracking-wide">Código PIX Copia e Cola</span>
                     
-                    <div className="flex items-center gap-2 bg-slate-50 border border-gray-200 rounded-xl p-2.5">
+                    <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl p-2">
                       <input 
                         type="text" 
                         readOnly 
                         value="00020101021226830014br.gov.bcb.pix2561api..." 
-                        className="bg-transparent border-none text-xs text-gray-500 flex-1 select-all focus:outline-none"
+                        className="bg-transparent border-none text-xs text-slate-500 flex-1 font-mono focus:outline-none select-all"
                       />
                       <button
                         onClick={copyPixKey}
-                        className="bg-gray-900 text-white p-2 rounded-lg hover:scale-105 active:scale-95 transition flex items-center justify-center gap-1 text-xs font-bold font-mono whitespace-nowrap shrink-0"
+                        className="bg-slate-900 hover:bg-slate-800 text-white py-1.5 px-3 rounded-lg hover:scale-105 active:scale-95 transition flex items-center justify-center gap-1 text-xs font-bold"
                         id="copy-pix-btn"
                       >
-                        {copiedPix ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        {copiedPix ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                         {copiedPix ? 'Copiado!' : 'Copiar'}
                       </button>
                     </div>
@@ -331,17 +319,17 @@ Desejamos a você domingos mais livres e aulas incríveis!
                 </div>
               )}
 
-              {/* CARD Render */}
+              {/* Render credit card form */}
               {paymentMethod === 'card' && (
                 <div className="space-y-3">
                   <div className="relative">
-                    <CreditCard className="w-4 h-4 text-gray-400 absolute left-3 top-3.5" />
+                    <CreditCard className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
                     <input
                       type="text"
                       placeholder="Número do Cartão"
                       value={cardNum}
                       onChange={(e) => setCardNum(e.target.value)}
-                      className="w-full pl-9 pr-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none"
+                      className="w-full pl-9 pr-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                       id="card-num-input"
                     />
                   </div>
@@ -351,7 +339,7 @@ Desejamos a você domingos mais livres e aulas incríveis!
                     placeholder="Nome Impresso no Cartão"
                     value={cardName}
                     onChange={(e) => setCardName(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none"
+                    className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                     id="card-name-input"
                   />
 
@@ -361,7 +349,7 @@ Desejamos a você domingos mais livres e aulas incríveis!
                       placeholder="Validade (MM/AA)"
                       value={cardExp}
                       onChange={(e) => setCardExp(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none"
+                      className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                       id="card-exp-input"
                     />
                     <input
@@ -369,81 +357,84 @@ Desejamos a você domingos mais livres e aulas incríveis!
                       placeholder="CVV"
                       value={cardCvv}
                       onChange={(e) => setCardCvv(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none"
+                      className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-blue-500 focus:bg-white transition"
                       id="card-cvv-input"
                     />
                   </div>
                 </div>
               )}
 
-              <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 flex items-center gap-2 text-[10px] text-gray-500 leading-normal">
-                <Lock className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Simulação Segura: Seus dados estão criptografados de ponta a ponta. Clique no botão de confirmação para testar o recebimento dos materiais pedagógicos.</span>
+              {/* Bullet indicators */}
+              <div className="flex justify-center gap-1.5 pt-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600" />
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-200" />
               </div>
 
+              {/* Action trigger button */}
+              <button
+                onClick={handleConfirmPayment}
+                className="w-full py-3.5 bg-[#22c55e] hover:bg-[#16a34a] text-white font-black text-sm sm:text-base rounded-2xl shadow-md transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 transform active:scale-95"
+                id="checkout-confirm-btn"
+              >
+                {paymentMethod === 'pix' ? 'Simular Confirmação do Pix' : 'Simular Pagamento no Cartão'}
+              </button>
             </div>
           )}
 
-          {/* STEP 3: SUCCESS STATE & SAMPLE DOWNLOAD */}
+          {/* STEP 3: Beautiful immediate download page */}
           {step === 3 && (
             <div className="text-center space-y-5 py-4 animate-scale-up">
-              
-              {/* Success Icon animation */}
-              <div className="inline-flex bg-emerald-50 text-emerald-500 p-4 rounded-full border-4 border-emerald-100 animate-bounce">
+              <div className="inline-flex bg-[#effaf3] text-[#22c55e] p-4 rounded-full border-4 border-[#d1fae5] animate-bounce">
                 <CheckCircle2 className="w-12 h-12 fill-emerald-50" />
               </div>
 
               <div className="space-y-1.5">
-                <h4 className="text-2xl font-black text-gray-900">Pagamento Confirmado!</h4>
-                <p className="text-xs text-gray-500 px-4 leading-relaxed">
-                  Parabéns, Professor(a) <strong>{name}</strong>! Enviamos a confirmação oficial de acesso no e-mail <strong>{email}</strong> e no seu número <strong>{whatsapp}</strong>.
+                <h4 className="text-2xl font-black text-slate-900 leading-tight">Acesso Autorizado!</h4>
+                <p className="text-xs text-slate-500 px-4 leading-relaxed font-semibold">
+                  Parabéns, Professor(a) <strong className="text-slate-800">{name}</strong>! Seu material está pronto. Clique abaixo para fazer o download imediato em PDF.
                 </p>
               </div>
 
-              {/* Download block */}
-              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-3.5 max-w-sm mx-auto text-left">
+              <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-3.5 max-w-sm mx-auto text-left">
                 <div className="flex items-center gap-3">
-                  <div className="bg-blue-600 text-white p-2 rounded-xl">
+                  <div className="bg-blue-600 text-white p-2.5 rounded-xl">
                     <Download className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-blue-600 font-bold block">Amostra do Acervo</span>
-                    <strong className="text-xs text-gray-800 font-bold block">PDF_Dinâmicas_Português_2026.txt</strong>
+                    <span className="text-[9px] uppercase font-mono tracking-wider text-blue-600 font-black block">PDF_AMOSTRA_PRONTA.txt</span>
+                    <strong className="text-xs text-slate-800 font-bold block">2 Dinâmicas Completas de Amostra</strong>
                   </div>
                 </div>
 
-                <p className="text-[11px] text-gray-500 leading-normal">
-                  Como este é um ambiente de demonstração interativo, você pode baixar agora mesmo um arquivo de texto completo contendo as 2 dinâmicas premium mais bem avaliadas pelos professores para aplicar em sala de aula imediatamente.
+                <p className="text-[11px] text-slate-500 font-medium leading-normal">
+                  Como este é um ambiente de demonstração, preparamos as melhores e mais bem avaliadas dinâmicas lúdicas em um arquivo pronto para você baixar e testar a aplicação agora mesmo.
                 </p>
 
                 <button
                   onClick={handleDownloadSample}
-                  className="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm rounded-xl transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-3 px-4 bg-[#22c55e] hover:bg-[#16a34a] text-white font-black text-sm rounded-xl transition shadow flex items-center justify-center gap-1.5 cursor-pointer"
                   id="modal-download-sample-btn"
                 >
-                  <Download className="w-4 h-4" />
-                  Baixar Amostra de Atividades agora
+                  <Download className="w-4 h-4 stroke-[2.5]" />
+                  Baixar Amostra Completa em PDF
                 </button>
               </div>
-
             </div>
           )}
 
         </div>
 
-        {/* Modal Footer (Only shown for step 1 and 2) */}
-        {step < 3 && (
-          <div className="bg-slate-50 p-5 border-t border-gray-200/50 flex items-center justify-between">
-            <span className="text-xs text-gray-400 font-medium">Etapa {step} de 2</span>
-            
-            <button
-              onClick={step === 1 ? handleNextStep : handleConfirmPayment}
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl transition shadow flex items-center gap-1 cursor-pointer"
-              id="checkout-confirm-btn"
+        {/* Back navigation only if in Step 2 */}
+        {step === 2 && (
+          <div className="bg-slate-50 px-6 py-4 border-t border-slate-100 flex justify-between items-center text-xs">
+            <button 
+              onClick={() => { setErrors(null); setStep(1); }}
+              className="text-slate-400 hover:text-slate-600 font-black uppercase tracking-wider cursor-pointer"
             >
-              {step === 1 ? 'Avançar para Pagamento' : 'Confirmar Pagamento Simulado'}
-              <ChevronRight className="w-4 h-4" />
+              ← Voltar aos Dados
             </button>
+            <span className="text-slate-400 font-mono font-bold">Etapa 2 de 2</span>
           </div>
         )}
 

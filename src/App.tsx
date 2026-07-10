@@ -3,14 +3,16 @@ import AnnouncementBar from './components/AnnouncementBar';
 import Header from './components/Header';
 import Transformation from './components/Transformation';
 import MaterialExplorer from './components/MaterialExplorer';
+import VideoSection from './components/VideoSection';
+import FeaturesGrid from './components/FeaturesGrid';
 import BonusGrid from './components/BonusGrid';
+import ActionCta from './components/ActionCta';
 import TestimonialSlider from './components/TestimonialSlider';
 import Pricing from './components/Pricing';
 import FAQAccordion from './components/FAQAccordion';
 import CheckoutModal from './components/CheckoutModal';
 import { CheckoutState } from './types';
 import { 
-  ShoppingCart, 
   ShieldCheck, 
   Heart, 
   BookOpen, 
@@ -26,22 +28,7 @@ export default function App() {
     price: 27.90
   });
 
-  const [showStickyCta, setShowStickyCta] = useState(false);
 
-  // Monitor scroll to reveal floating CTA button
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroSection = document.getElementById('demo-video-player');
-      if (heroSection) {
-        const rect = heroSection.getBoundingClientRect();
-        // Show button once the video demo moves out of view
-        setShowStickyCta(rect.bottom < 0);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const scrollToPricing = () => {
     const pricing = document.getElementById('pricing-section');
@@ -77,11 +64,23 @@ export default function App() {
       {/* 4. Google Drive Material Explorer */}
       <MaterialExplorer onScrollToOffers={scrollToPricing} />
 
-      {/* 5. Exclusive Bonuses Grid with Total Value Counter */}
+      {/* 4.1. Video Demonstration Section */}
+      <VideoSection />
+
+      {/* 5. Tudo o que você precisa em um só lugar */}
+      <FeaturesGrid onScrollToOffers={scrollToPricing} />
+
+      {/* 6. Exclusive Bonuses Grid with Total Value Counter */}
       <BonusGrid />
+
+      {/* 6.1 Action CTA Banner (Start transforming lessons) */}
+      <ActionCta onScrollToOffers={scrollToPricing} />
 
       {/* 6. Real WhatsApp Reviews Device & Testimonial Slider */}
       <TestimonialSlider />
+
+      {/* 8. Pricing Section */}
+      <Pricing onSelectPackage={handleOpenCheckout} />
 
       {/* 7. Guaranteed Return Banner */}
       <section id="guarantee-section" className="py-16 px-4 bg-slate-50 border-y border-gray-100">
@@ -120,9 +119,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* 8. Pricing Section */}
-      <Pricing onSelectPackage={handleOpenCheckout} />
-
       {/* 9. FAQ Accordions */}
       <FAQAccordion />
 
@@ -145,7 +141,7 @@ export default function App() {
           </h2>
           
           <p className="text-sm sm:text-lg text-blue-100 max-w-xl mx-auto leading-relaxed">
-            Pare de perder domingos preparando slides e listas de exercícios. Comece hoje a usar dinâmicas que os alunos amam e ganhe seu merecido descanso de volta.
+            Pare de perder domingos preparando materiais e listas de exercícios. Comece hoje a usar dinâmicas que os alunos amam e ganhe seu merecido descanso de volta.
           </p>
 
           <div className="pt-4 max-w-md mx-auto space-y-3">
@@ -199,24 +195,7 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 12. Sticky Float CTAs (Matches screenshots 2, 3, etc.) */}
-      <div 
-        id="sticky-float-cta"
-        className={`fixed bottom-6 right-6 z-40 transition-all duration-500 transform ${
-          showStickyCta 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-10 pointer-events-none'
-        }`}
-      >
-        <button
-          onClick={scrollToPricing}
-          className="bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-xs sm:text-sm py-3 px-5 rounded-full shadow-2xl flex items-center gap-2 hover:scale-105 active:scale-95 transition cursor-pointer"
-          id="floating-cta-btn"
-        >
-          <ShoppingCart className="w-4 h-4 fill-white" />
-          Garantir Acesso
-        </button>
-      </div>
+
 
       {/* 13. Interactive Checkout Drawer/Modal Dialog */}
       <CheckoutModal 

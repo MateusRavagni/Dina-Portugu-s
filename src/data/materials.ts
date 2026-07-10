@@ -27,9 +27,9 @@ export const sampleFolders: DriveFolder[] = [
   },
   {
     id: 'folder-2',
-    name: '2-400 DINÂMICAS DE PORTUGUÊS',
+    name: '2-100 DINÂMICAS DE PORTUGUÊS',
     color: 'bg-blue-100 text-blue-800 border-blue-200',
-    itemsCount: 400,
+    itemsCount: 100,
     items: [
       {
         id: 'dyn-gram-1',
@@ -107,102 +107,27 @@ export const sampleFolders: DriveFolder[] = [
     ]
   },
   {
-    id: 'folder-3',
-    name: '3-ATIVIDADES PARA IMPRIMIR',
-    color: 'bg-green-100 text-green-800 border-green-200',
-    itemsCount: 500,
-    items: [
-      {
-        id: 'act-print-1',
-        title: 'Caderno Prático de Sintaxe: Sujeito e Predicado Sem Mistérios',
-        category: 'Gramática Prática',
-        level: '6º ao 8º Ano',
-        bncc: 'EF07LP06',
-        duration: '40 min',
-        objective: 'Praticar a identificação de termos essenciais da oração através de tirinhas de quadrinhos e letras de música atuais.',
-        materialsNeeded: ['Atividade Impressa de Sintaxe (pronta para imprimir)'],
-        stepByStep: [
-          'Distribua a folha de exercícios ilustrada.',
-          'Instrua os alunos a lerem as tirinhas do Chico Bento e do Calvin, sublinhando os verbos.',
-          'Eles devem circular os sujeitos, classificar seus núcleos e pintar os predicados com cores diferentes.',
-          'Correção coletiva com desafios rápidos na lousa.'
-        ],
-        tip: 'O uso de gêneros textuais curtos como tirinhas diminui a resistência dos alunos à análise sintática clássica.'
-      }
-    ]
-  },
-  {
-    id: 'folder-4',
-    name: '4-FLASHCARDS DE PORTUGUÊS',
-    color: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-    itemsCount: 250,
-    items: [
-      {
-        id: 'flash-1',
-        title: 'Flashcards de Figuras de Linguagem',
-        category: 'Recurso de Memorização',
-        level: '8º Ano ao Ensino Médio',
-        bncc: 'EF89LP37 / EM13LP48',
-        duration: '20 min',
-        objective: 'Fixar e memorizar a diferença entre figuras de pensamento, de sintaxe, de som e de palavras com feedback imediato.',
-        materialsNeeded: ['Kit de 250 Flashcards Imprimíveis de Português (cortados)'],
-        stepByStep: [
-          'Distribua os alunos em trios. Cada trio recebe um maço de flashcards (Frente: Frase literária ou de propaganda; Verso: Nome da figura de linguagem + breve explicação).',
-          'O aluno A retira um card e lê a frase em voz alta (ex: "Estou morrendo de rir!").',
-          'Os alunos B e C tentam adivinhar a figura (ex: Hipérbole). Quem acertar primeiro fica com a carta.',
-          'Ganha quem acumular mais cards ao final de 15 minutos.'
-        ],
-        tip: 'Ótima atividade de revisão rápida para aplicar nos últimos 15 minutos de uma aula cansativa ou antes de uma prova bimestral.'
-      }
-    ]
-  },
-  {
     id: 'folder-5',
-    name: '5-SLIDES DIDÁTICOS',
+    name: '4-DINÂMICAS PRONTAS PARA AULA',
     color: 'bg-purple-100 text-purple-800 border-purple-200',
-    itemsCount: 45,
+    itemsCount: 5,
     items: [
       {
         id: 'slide-1',
-        title: 'Masterclass: Regência Verbal de Forma Visual',
-        category: 'Slides Prontos',
+        title: 'Masterclass: Regência Verbal Interativa',
+        category: 'Dinâmicas Prontas',
         level: 'Ensino Médio e Vestibulares',
         bncc: 'EM13LP08',
         duration: '45 min',
-        objective: 'Apresentar teoricamente a regência dos principais verbos cobrados em vestibulares e concursos públicos usando recursos visuais modernos.',
-        materialsNeeded: ['Projetor', 'Arquivo de Slides Prontos (incluso)'],
+        objective: 'Apresentar de forma dinâmica a regência dos principais verbos cobrados em vestibulares e concursos públicos usando dinâmicas lúdicas e visuais modernos.',
+        materialsNeeded: ['Quadro ou Projetor', 'Guia de Dinâmicas Prontas (incluso)'],
         stepByStep: [
-          'Abra os slides interativos de regência verbal.',
+          'Abra o guia interativo de regência verbal.',
           'Explique a dupla regência de verbos chave (Aspirar, Assistir, Visar, Preferir) usando imagens divertidas de duplo sentido.',
-          'Peça para os alunos lerem os exemplos projetados em conjunto.',
-          'Aplique o Quiz de Verificação de Aprendizado incluso nos últimos slides.'
+          'Peça para os alunos realizarem os desafios em conjunto.',
+          'Aplique o Quiz de Verificação de Aprendizado incluso nos últimos blocos.'
         ],
-        tip: 'Esqueça slides lotados de textos! Nossos slides são projetados seguindo metodologias de design visual para prender a atenção até do aluno mais disperso.'
-      }
-    ]
-  },
-  {
-    id: 'folder-6',
-    name: '6-KIT PORTUGUÊS INTERATIVO',
-    color: 'bg-pink-100 text-pink-800 border-pink-200',
-    itemsCount: 30,
-    items: [
-      {
-        id: 'kit-game-1',
-        title: 'Jogo de Tabuleiro: O Caminho da Ortografia Oficial',
-        category: 'Jogos Pedagógicos',
-        level: '6º ao 9º Ano',
-        bncc: 'EF67LP32',
-        duration: '50 min',
-        objective: 'Aplicar as regras do Novo Acordo Ortográfico, uso do Hífen, do S, X, Z e dos Porquês em um jogo lúdico coletivo.',
-        materialsNeeded: ['Tabuleiro impresso colorido (incluso)', 'Dados e peões de papel', 'Cartas de Desafio'],
-        stepByStep: [
-          'Os alunos se organizam em grupos de 4 participantes.',
-          'Cada grupo monta o tabuleiro de Ortografia na mesa.',
-          'Ao jogar o dado, o peão avança e o aluno deve puxar uma Carta de Desafio Ortográfico correspondente à casa onde caiu (ex: "Escreva na folha de rascunho: autoestrada tem hífen ou não?").',
-          'Se o grupo validar que a grafia está correta, ele permanece na casa, caso contrário, volta para a casa anterior.'
-        ],
-        tip: 'A competição sadia faz com que os alunos busquem justificar as regras entre si, fixando as normas ortográficas sem necessidade de decoreba passiva.'
+        tip: 'Esqueça aulas lotadas de textos copiosos! Nossas dinâmicas são projetadas seguindo metodologias ativas para prender a atenção até do aluno mais disperso.'
       }
     ]
   }
@@ -210,32 +135,18 @@ export const sampleFolders: DriveFolder[] = [
 
 export const bonusItems = [
   {
-    id: 'bonus-1',
-    title: '+250 Flashcards de Português Prontos',
-    description: 'Centenas de Flashcards prontos e separados por temas para praticar figuras de linguagem, classes gramaticais e ortografia de forma divertida e memorável.',
-    realPrice: 'R$ 19,90',
-    badge: '🗂️ Vocabulário & Estilo'
-  },
-  {
     id: 'bonus-2',
-    title: '500+ Atividades de Língua Portuguesa para Imprimir',
+    title: '100+ Atividades de Língua Portuguesa para Imprimir',
     description: 'Atividades alinhadas à BNCC para todos os níveis do Fundamental II e Médio. Exercícios prontos com gabarito detalhado para economizar suas noites de planejamento.',
     realPrice: 'R$ 24,90',
     badge: '📝 Atividades Prontas'
   },
   {
     id: 'bonus-3',
-    title: 'Slides Prontos Para Aula (Editáveis)',
-    description: 'Apresentações didáticas de alto impacto visual cobrindo os principais tópicos: análise sintática, concordância, regência, crase e coesão textual.',
+    title: 'Dinâmicas Prontas para Aula (Editáveis)',
+    description: 'Dinâmicas e jogos lúdicos de alto engajamento cobrindo os principais tópicos: análise sintática, concordância, regência, crase e coesão textual.',
     realPrice: 'R$ 18,90',
-    badge: '📽️ Apresentações Premium'
-  },
-  {
-    id: 'bonus-4',
-    title: 'Kit Português Interativo',
-    description: 'Um pacote de 30 materiais visuais, jogos lúdicos de tabuleiro, palavras cruzadas dinâmicas e quizzes rápidos prontos para imprimir e aplicar.',
-    realPrice: 'R$ 15,90',
-    badge: '🎮 Jogos & Ludicidade'
+    badge: '📽️ Dinâmicas Premium'
   },
   {
     id: 'bonus-5',
@@ -243,52 +154,82 @@ export const bonusItems = [
     description: 'Planejamento anual completo e estruturado para o Ensino Fundamental II e Médio. Códigos de habilidades e metodologias já descritos, facilitando a entrega na coordenação.',
     realPrice: 'R$ 12,90',
     badge: '📅 Alinhado à BNCC'
-  },
-  {
-    id: 'bonus-6',
-    title: 'Kit de Aulas de Emergência',
-    description: 'Pegou uma aula substituta ou teve um imprevisto na sua semana? Tenha em mãos um kit com 10 aulas independentes, altamente engajadoras e completas para aplicar imediatamente.',
-    realPrice: 'R$ 4,74',
-    badge: '🚨 Salva-Vidas do Professor'
   }
 ];
 
 export const clientTestimonials: Testimonial[] = [
   {
     id: 'test-1',
-    author: 'Gabrielle Menezes',
-    role: 'Professora de Língua Portuguesa',
-    school: 'Colégio Estadual Santos Dumont',
-    text: 'Amei essa! As dinâmicas ainda vou aplicar, mas somente as atividades já valeram o valor que paguei, muito boas mesmo. Eu estava aqui preparando as aulas para amanhã, o que antes me tomava o domingo inteiro, e terminei tudo em 15 minutos usando o material de Análise Sintática contextualizada com tirinhas!',
-    date: 'Hoje, há 15 minutos',
-    whatsappScreenshot: true
+    author: 'Mariana Silva',
+    role: 'Professora de Literatura',
+    school: 'Ensino de Literatura e Gramática',
+    text: 'Meninas, passando pra agradecer pelo material de Língua Portuguesa! É simplesmente maravilhoso e ajudou demais a organizar minhas aulas dessa semana. Muito obrigada mesmo! 😍🙌',
+    replyText: 'Que alegria ler isso, Mariana! ❤️ Ficamos muito felizes em ajudar. Agradecemos muito pela compra e pela confiança no nosso trabalho!',
+    date: 'Hoje',
+    timeSender: '10:35',
+    timeReply: '10:41',
+    theme: 'whatsapp',
+    whatsappScreenshot: true,
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150&h=150',
+    onlineStatus: 'online'
   },
   {
     id: 'test-2',
-    author: 'Renata Vasconcellos',
-    role: 'Professora de Redação e Literatura',
-    school: 'Escola Municipal Paulo Freire',
-    text: 'O Júri Simulado de Dom Casmurro foi o maior sucesso que já tive com o 9º ano! Alunos que nunca abriam a boca para falar de clássicos trouxeram argumentos incríveis baseados nas pistas textuais que pegaram no slide. Eles pediram para ler o próximo livro correndo para termos outro tribunal. Incrível!',
-    date: 'Ontem, às 19:42',
-    whatsappScreenshot: false
+    author: 'Ricardo Oliveira',
+    role: 'Professor de Redação',
+    school: 'Ensino de Língua Portuguesa e Redação',
+    text: 'Boa tarde! Comprei o Kit de Redação e achei excelente. Facilitou muito a dinâmica das minhas aulas e as correções de texto. Parabéns pelo material, valeu cada centavo!',
+    replyText: 'Sensacional, Ricardo! Muito obrigado pelo feedback e pela compra do material. Ficamos muito felizes que tenha gostado! 🚀',
+    date: 'Hoje',
+    timeSender: '15:35',
+    timeReply: '15:41',
+    theme: 'whatsapp',
+    whatsappScreenshot: true,
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150',
+    onlineStatus: 'online'
   },
   {
     id: 'test-3',
-    author: 'Marcio Silva',
-    role: 'Professor de Gramática e Redação',
-    school: 'Instituto de Educação do Paraná',
-    text: 'Eu confesso que estava cético por causa do preço super em conta, mas o material me surpreendeu demais pela qualidade pedagógica. É tudo alinhado à BNCC, o Guia de Planejamento facilitou minha vida com a coordenação e o kit de aulas de emergência já me salvou duas vezes este mês. Vale cada centavo!',
-    date: 'Há 3 dias',
-    whatsappScreenshot: true
+    author: 'Ana Paula Costa',
+    role: 'Professora de Gramática',
+    school: 'Ensino Fundamental II e Médio',
+    text: 'Comprei o Pacote Completo de materiais e estou chocada com a qualidade! Muito prático, completo e já vem prontinho para imprimir e usar nas aulas. Super recomendo!',
+    replyText: 'Nós que agradecemos imensamente pela compra e pela confiança, Ana Paula! 🌟 Que você tenha excelentes aulas com os materiais!',
+    date: 'Hoje',
+    timeSender: '10:35',
+    timeReply: '10:42',
+    theme: 'whatsapp',
+    whatsappScreenshot: true,
+    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150&h=150',
+    onlineStatus: 'online'
   },
   {
     id: 'test-4',
-    author: 'Mariana Duarte',
-    role: 'Professora do Ensino Fundamental II',
-    school: 'Escola Particular Anglo-Líder',
-    text: 'Meus alunos do 7º ano odiavam concordância nominal. Apliquei o "Detetive dos Vícios de Linguagem" e eles deram risada o tempo todo corrigindo os memes e manchetes com erros reais. Foi maravilhoso ver eles aprendendo sintaxe sem perceber! Recomendo a todos os professores.',
-    date: 'Há 5 dias',
-    whatsappScreenshot: false
+    author: 'profe_juliana',
+    role: 'Professora de Língua Portuguesa',
+    school: 'Ensino de Redação e Gramática',
+    text: 'Oii! Só queria passar para agradecer por esse material de Português maravilhoso. Ele economizou muito o meu tempo de planejamento essa semana. Gratidão! ❤️',
+    replyText: 'Ficamos com o coração super quentinho com isso, Juliana! 🥰 Muito obrigado pela compra e por nos escolher como parceiros das suas aulas!',
+    date: 'Hoje 16:15',
+    timeSender: '16:15',
+    theme: 'instagram',
+    instagramUsername: 'profe_juliana',
+    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150&h=150',
+    onlineStatus: 'Online agora'
+  },
+  {
+    id: 'test-5',
+    author: 'eduardo_prof',
+    role: 'Professor de Literatura',
+    school: 'Ensino Médio e Pré-Vestibular',
+    text: 'Cara, que material excelente! Comprei para usar com as minhas turmas de português e o engajamento foi total. Parabéns pela qualidade das atividades!',
+    replyText: 'Que massa, Eduardo! Muito obrigado pelo apoio e pela compra do material. Desejamos muito sucesso com suas turmas! 🚀📚',
+    date: 'Hoje 19:32',
+    timeSender: '19:32',
+    theme: 'instagram',
+    instagramUsername: 'eduardo_prof',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150',
+    onlineStatus: 'Online há 1 h'
   }
 ];
 
@@ -296,7 +237,7 @@ export const faqList: FAQItem[] = [
   {
     id: 'faq-1',
     question: 'O acesso chega na hora?',
-    answer: 'Sim! Assim que o seu pagamento for aprovado (o Pix é aprovado em menos de 2 minutos), você recebe o link de download instantaneamente no seu e-mail de cadastro e também no seu WhatsApp para maior comodidade.'
+    answer: 'Sim! Assim que o seu pagamento for aprovado (o Pix é aprovado em menos de 2 minutos), você é direcionado automaticamente para a página de download imediato para baixar o material.'
   },
   {
     id: 'faq-2',
@@ -311,7 +252,7 @@ export const faqList: FAQItem[] = [
   {
     id: 'faq-4',
     question: 'Qual a diferença entre o Pacote Básico e o Completo?',
-    answer: 'O Pacote Básico (R$ 10) inclui o arquivo principal com +400 Dinâmicas Prontas e o caderno com +500 Atividades para Imprimir. Já o Pacote Completo (R$ 27,90) é a nossa melhor escolha e inclui tudo isso mais os 6 Bônus Exclusivos (+250 Flashcards, Slides Didáticos Editáveis, Kit de Jogos Interativos, Guia BNCC Anual, Kit Aulas de Emergência), além de atualizações semanais de conteúdo novo e suporte prioritário via WhatsApp.'
+    answer: 'O Pacote Básico (R$ 10) inclui o arquivo principal com +100 Dinâmicas Prontas e o caderno com +100 Atividades para Imprimir. Já o Pacote Completo (R$ 27,90) é a nossa melhor escolha e inclui tudo isso mais os 3 Bônus Exclusivos (Dinâmicas Prontas para Aula, Guia BNCC Anual e Atividades Prontas para Imprimir), além de suporte prioritário via WhatsApp.'
   },
   {
     id: 'faq-5',
@@ -321,6 +262,6 @@ export const faqList: FAQItem[] = [
   {
     id: 'faq-6',
     question: 'Funciona para aulas Online e Presenciais?',
-    answer: 'Com certeza! Praticamente todas as dinâmicas e jogos do kit de Português possuem instruções de adaptação tanto para o modelo presencial (usando materiais impressos e quadro) quanto para o modelo digital (usando slides projetados, salas simultâneas de videoconferência ou quizzes digitais).'
+    answer: 'Com certeza! Praticamente todas as dinâmicas e jogos do kit de Português possuem instruções de adaptação tanto para o modelo presencial (usando materiais impressos e quadro) quanto para o modelo digital (usando recursos projetados, salas simultâneas de videoconferência ou quizzes digitais).'
   }
 ];

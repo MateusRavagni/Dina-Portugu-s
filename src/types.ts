@@ -28,6 +28,12 @@ export interface Testimonial {
   text: string;
   date: string;
   whatsappScreenshot?: boolean;
+  theme?: 'whatsapp' | 'instagram';
+  replyText?: string;
+  timeSender?: string;
+  timeReply?: string;
+  instagramUsername?: string;
+  onlineStatus?: string;
 }
 
 export interface FAQItem {

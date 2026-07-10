@@ -12,7 +12,7 @@ export default function Transformation() {
     },
     {
       before: "Material didático genérico, caro e desatualizado",
-      after: "+400 dinâmicas e 500+ atividades prontas para usar"
+      after: "+100 dinâmicas e 100+ atividades prontas para usar"
     },
     {
       before: "Domingos inteiros perdidos preparando planos de aula",
