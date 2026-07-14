@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react';
 import AnnouncementBar from './components/AnnouncementBar';
 import Header from './components/Header';
 import Transformation from './components/Transformation';
-import MaterialExplorer from './components/MaterialExplorer';
-import VideoSection from './components/VideoSection';
+import DynamicsCarousel from './components/DynamicsCarousel';
 import FeaturesGrid from './components/FeaturesGrid';
-import BonusGrid from './components/BonusGrid';
-import ActionCta from './components/ActionCta';
 import TestimonialSlider from './components/TestimonialSlider';
 import Pricing from './components/Pricing';
 import FAQAccordion from './components/FAQAccordion';
@@ -61,20 +58,11 @@ export default function App() {
       {/* 3. Before/After Transformation list */}
       <Transformation />
 
-      {/* 4. Google Drive Material Explorer */}
-      <MaterialExplorer onScrollToOffers={scrollToPricing} />
-
-      {/* 4.1. Video Demonstration Section */}
-      <VideoSection />
+      {/* 4. Animated Pedagogical Dynamics Carousel */}
+      <DynamicsCarousel />
 
       {/* 5. Tudo o que você precisa em um só lugar */}
       <FeaturesGrid onScrollToOffers={scrollToPricing} />
-
-      {/* 6. Exclusive Bonuses Grid with Total Value Counter */}
-      <BonusGrid />
-
-      {/* 6.1 Action CTA Banner (Start transforming lessons) */}
-      <ActionCta onScrollToOffers={scrollToPricing} />
 
       {/* 6. Real WhatsApp Reviews Device & Testimonial Slider */}
       <TestimonialSlider />
@@ -85,14 +73,14 @@ export default function App() {
       {/* 7. Guaranteed Return Banner */}
       <section id="guarantee-section" className="py-16 px-4 bg-slate-50 border-y border-gray-100">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white border border-blue-100 shadow-xl rounded-3xl p-6 sm:p-10 relative overflow-hidden text-center">
+          <div className="bg-white border border-blue-100 shadow-xl rounded-3xl p-6 sm:p-10 relative text-center">
             
             {/* Top Seal Badge */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white p-4 rounded-full shadow-lg border-4 border-white">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white p-4 rounded-full shadow-lg border-4 border-white z-10">
               <ShieldCheck className="w-8 h-8" />
             </div>
 
-            <div className="pt-6 space-y-4 max-w-2xl mx-auto">
+            <div className="pt-8 sm:pt-10 space-y-4 max-w-2xl mx-auto">
               <h3 className="text-2xl sm:text-3xl font-black text-gray-900">
                 Garantia Incondicional de 7 Dias
               </h3>

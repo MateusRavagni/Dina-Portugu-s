@@ -103,34 +103,15 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
 
-  // Initialize from cache or custom URL
+  // Initialize from default video path (ensuring newly uploaded file is played)
   useEffect(() => {
-    const savedUrl = localStorage.getItem('sarau_video_url');
-    if (savedUrl) {
-      setVideoSrc(savedUrl);
-      setInputUrl(savedUrl);
-      setVideoError(false);
-      setFallbackIndex(-1);
-      return;
-    }
+    // Clear any cached / outdated stored videos to prioritize the newly uploaded /video.mp4
+    localStorage.removeItem('sarau_video_url');
+    clearVideoFromDB().catch(console.error);
 
-    loadVideoFromDB()
-      .then((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          setVideoSrc(url);
-          setVideoError(false);
-          setFallbackIndex(-1);
-        } else {
-          // Default: start attempting local paths from index 0
-          setFallbackIndex(0);
-          setVideoSrc(DEFAULT_VIDEO_PATHS[0]);
-        }
-      })
-      .catch(() => {
-        setFallbackIndex(0);
-        setVideoSrc(DEFAULT_VIDEO_PATHS[0]);
-      });
+    setVideoSrc(DEFAULT_VIDEO_PATHS[0]);
+    setVideoError(false);
+    setFallbackIndex(0);
   }, []);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -245,20 +226,12 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
           </span>
         </div>
 
-        {/* Subtitle / Call to action */}
-        <div className="mt-12 mb-6 flex flex-col items-center justify-center text-center gap-2">
-          <span className="text-blue-600 font-extrabold text-sm sm:text-base flex items-center gap-1.5">
-            🎬 Assista ao vídeo de demonstração do Sarau Poético
-          </span>
-          <p className="text-xs text-gray-500 max-w-md">
-            Veja na prática como funciona essa metodologia ativa que engaja os alunos do início ao fim.
-          </p>
-        </div>
+
 
         {/* Real Video Player Container */}
         <div 
           id="demo-video-player"
-          className="relative max-w-md mx-auto bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-4 border-white flex items-center justify-center aspect-[3/4]"
+          className="relative mt-12 max-w-[340px] mx-auto bg-transparent rounded-2xl overflow-hidden shadow-2xl border-4 border-white flex items-center justify-center aspect-[464/832]"
         >
           {!videoError && videoSrc ? (
             <div className="relative w-full h-full">
@@ -282,7 +255,7 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
                 <video
                   key={videoSrc}
                   src={videoSrc}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover"
                   controls
                   playsInline
                   preload="auto"

@@ -252,7 +252,7 @@ export const faqList: FAQItem[] = [
   {
     id: 'faq-4',
     question: 'Qual a diferença entre o Pacote Básico e o Completo?',
-    answer: 'O Pacote Básico (R$ 10) inclui o arquivo principal com +100 Dinâmicas Prontas e o caderno com +100 Atividades para Imprimir. Já o Pacote Completo (R$ 27,90) é a nossa melhor escolha e inclui tudo isso mais os 3 Bônus Exclusivos (Dinâmicas Prontas para Aula, Guia BNCC Anual e Atividades Prontas para Imprimir), além de suporte prioritário via WhatsApp.'
+    answer: 'O Pacote Básico (R$ 10) inclui o arquivo principal com +100 Dinâmicas Prontas e o caderno com +100 Atividades para Imprimir. Já o Pacote Completo (R$ 27,90) é a nossa melhor escolha e inclui tudo isso mais os 3 Bônus Exclusivos (Dinâmicas Prontas para Aula, Guia BNCC Anual e Atividades Prontas para Imprimir).'
   },
   {
     id: 'faq-5',

@@ -161,10 +161,6 @@ export default function Pricing({ onSelectPackage }: PricingProps) {
                     <Check className="w-4 h-4 text-[#22c55e] shrink-0 mt-0.5 stroke-[3]" />
                     <span>Tudo do Pacote Básico (+100 Dinâmicas + 100 Atividades) + 100 Atividades Bônus + Bônus Exclusivos</span>
                   </div>
-                  <div className="flex items-start gap-2.5 text-[14px] font-bold text-gray-800 leading-snug">
-                    <Check className="w-4 h-4 text-[#22c55e] shrink-0 mt-0.5 stroke-[3]" />
-                    <span>Suporte Prioritário VIP</span>
-                  </div>
                   <div className="flex items-center gap-2.5 text-[14px] font-extrabold text-emerald-600">
                     <span className="text-lg leading-none shrink-0 font-black">∞</span>
                     <span>Acesso vitalício ao material principal e bônus</span>
