@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Star, ChevronRight, Upload, Settings, Link2, RotateCcw, Check, HelpCircle, Film } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Star, ChevronRight, Upload, Settings, Link2, RotateCcw, Check, HelpCircle, Film, VolumeX, Volume2 } from 'lucide-react';
 
 // IndexedDB Helper for persistent local video cache
 const DB_NAME = 'VideoCacheDB';
@@ -75,12 +75,12 @@ function getYouTubeEmbedUrl(url: string): string | null {
 
 function getVimeoEmbedUrl(url: string): string | null {
   if (!url) return null;
-  const regExp = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/;
-  const match = url.match(regExp);
-  return match ? `https://player.vimeo.com/video/${match[3]}?autoplay=1&muted=1&loop=1` : null;
+  const match = url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/);
+  return match ? `https://player.vimeo.com/video/${match[1]}?autoplay=1&muted=1&loop=1&controls=0&autopause=0` : null;
 }
 
 const DEFAULT_VIDEO_PATHS = [
+  'https://vimeo.com/1209720493?share=copy&fl=sv&fe=ci',
   '/video.mp4',
   '/sarau.mp4',
   '/sarau-poetico.mp4',
@@ -102,6 +102,16 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
   const [inputUrl, setInputUrl] = useState<string>('');
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [showSaveSuccess, setShowSaveSuccess] = useState(false);
+
+  // States & Refs for Mute Overlay Control
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Reset mute state when video source changes
+  useEffect(() => {
+    setIsMuted(true);
+  }, [videoSrc]);
 
   // Initialize from default video path (ensuring newly uploaded file is played)
   useEffect(() => {
@@ -161,9 +171,7 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
     } catch (err) {
       console.error('Erro ao restaurar padrão:', err);
     }
-  };
-
-  const handleVideoError = () => {
+  };  const handleVideoError = () => {
     if (fallbackIndex >= 0 && fallbackIndex < DEFAULT_VIDEO_PATHS.length - 1) {
       const nextIndex = fallbackIndex + 1;
       setFallbackIndex(nextIndex);
@@ -176,6 +184,28 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
       setVideoError(false);
     } else {
       setVideoError(true);
+    }
+  };
+
+  const handleOverlayClick = () => {
+    if (getVideoType(videoSrc) === 'vimeo') {
+      if (iframeRef.current) {
+        if (isMuted) {
+          iframeRef.current.contentWindow?.postMessage(JSON.stringify({ method: 'setVolume', value: 1 }), '*');
+          iframeRef.current.contentWindow?.postMessage(JSON.stringify({ method: 'setMuted', value: false }), '*');
+          setIsMuted(false);
+        } else {
+          iframeRef.current.contentWindow?.postMessage(JSON.stringify({ method: 'setVolume', value: 0 }), '*');
+          iframeRef.current.contentWindow?.postMessage(JSON.stringify({ method: 'setMuted', value: true }), '*');
+          setIsMuted(true);
+        }
+      }
+    } else {
+      if (videoRef.current) {
+        const newMuted = !videoRef.current.muted;
+        videoRef.current.muted = newMuted;
+        setIsMuted(newMuted);
+      }
     }
   };
 
@@ -245,6 +275,7 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
                 />
               ) : getVideoType(videoSrc) === 'vimeo' && getVimeoEmbedUrl(videoSrc) ? (
                 <iframe
+                  ref={iframeRef}
                   src={getVimeoEmbedUrl(videoSrc)!}
                   className="w-full h-full"
                   allow="autoplay; fullscreen; picture-in-picture"
@@ -253,10 +284,10 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
                 />
               ) : (
                 <video
+                  ref={videoRef}
                   key={videoSrc}
                   src={videoSrc}
                   className="w-full h-full object-cover"
-                  controls
                   playsInline
                   preload="auto"
                   autoPlay
@@ -269,6 +300,25 @@ export default function Header({ onScrollToOffers }: HeaderProps) {
                   Seu navegador não suporta a tag de vídeo.
                 </video>
               )}
+
+              {/* Absolute Overlay Layer to trap clicks, mute/unmute, and block pause */}
+              <div 
+                onClick={handleOverlayClick}
+                className="absolute inset-0 z-20 cursor-pointer bg-transparent flex items-center justify-center"
+              >
+                {isMuted && (
+                  <div className="bg-blue-600/95 hover:bg-blue-600/100 text-white text-xs sm:text-sm font-extrabold px-5 py-3 rounded-full shadow-xl border border-blue-400 flex items-center gap-2 animate-bounce select-none">
+                    <span>Clique para ativar o som</span>
+                    <VolumeX className="w-4 h-4 text-white shrink-0" />
+                  </div>
+                )}
+                {!isMuted && (
+                  <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1.5 select-none pointer-events-none">
+                    <Volume2 className="w-3.5 h-3.5 text-white animate-pulse" />
+                    <span>Som Ativado</span>
+                  </div>
+                )}
+              </div>
             </div>
           ) : (
             /* SIMPLE SLEEK MINIMALIST ERROR/LOADING STATE */
