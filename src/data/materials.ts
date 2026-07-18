@@ -27,9 +27,9 @@ export const sampleFolders: DriveFolder[] = [
   },
   {
     id: 'folder-2',
-    name: '2-100 DINÂMICAS DE PORTUGUÊS',
+    name: '2-50 DINÂMICAS DE PORTUGUÊS',
     color: 'bg-blue-100 text-blue-800 border-blue-200',
-    itemsCount: 100,
+    itemsCount: 50,
     items: [
       {
         id: 'dyn-gram-1',
@@ -136,7 +136,7 @@ export const sampleFolders: DriveFolder[] = [
 export const bonusItems = [
   {
     id: 'bonus-2',
-    title: '100+ Atividades de Língua Portuguesa para Imprimir',
+    title: '50+ Atividades de Língua Portuguesa para Imprimir',
     description: 'Atividades alinhadas à BNCC para todos os níveis do Fundamental II e Médio. Exercícios prontos com gabarito detalhado para economizar suas noites de planejamento.',
     realPrice: 'R$ 24,90',
     badge: '📝 Atividades Prontas'
@@ -252,7 +252,7 @@ export const faqList: FAQItem[] = [
   {
     id: 'faq-4',
     question: 'Qual a diferença entre o Pacote Básico e o Completo?',
-    answer: 'O Pacote Básico (R$ 10) inclui o arquivo principal com +100 Dinâmicas Prontas e o caderno com +100 Atividades para Imprimir. Já o Pacote Completo (R$ 27,90) é a nossa melhor escolha e inclui tudo isso mais os 3 Bônus Exclusivos (Dinâmicas Prontas para Aula, Guia BNCC Anual e Atividades Prontas para Imprimir).'
+    answer: 'O Pacote Básico (R$ 10) inclui o arquivo principal com +50 Dinâmicas Prontas e o caderno com +50 Atividades para Imprimir. Já o Pacote Completo (R$ 27,90) é a nossa melhor escolha e inclui tudo isso mais os 3 Bônus Exclusivos (Dinâmicas Prontas para Aula, Guia BNCC Anual e Atividades Prontas para Imprimir).'
   },
   {
     id: 'faq-5',

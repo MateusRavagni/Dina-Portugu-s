@@ -69,11 +69,11 @@ export default function Pricing({ onSelectPackage }: PricingProps) {
               <div className="space-y-4 py-6">
                 <div className="flex items-center gap-2.5 text-[14px] font-bold text-gray-800 leading-snug">
                   <Check className="w-4 h-4 text-[#22c55e] shrink-0 stroke-[3]" />
-                  <span>+100 Dinâmicas de Português Prontas</span>
+                  <span>+50 Dinâmicas de Português Prontas</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-[14px] font-bold text-gray-800 leading-snug">
                   <Check className="w-4 h-4 text-[#22c55e] shrink-0 stroke-[3]" />
-                  <span>+100 Atividades Para Imprimir</span>
+                  <span>+50 Atividades Para Imprimir</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-[14px] font-extrabold text-[#16a34a]">
                   <span className="text-lg leading-none shrink-0 font-black">∞</span>
@@ -114,13 +114,15 @@ export default function Pricing({ onSelectPackage }: PricingProps) {
                 </p>
               </div>
 
-              <button
-                onClick={() => onSelectPackage('basic', 10)}
-                className="w-full py-4 px-4 bg-[#22c55e] hover:bg-[#16a34a] text-white font-black text-base sm:text-lg rounded-2xl shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 cursor-pointer transform active:scale-95 text-center"
+              <a
+                href="https://ggcheckout.app/checkout/v5/dnut1AeeoTVMqUSFw58h"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-4 px-4 bg-[#22c55e] hover:bg-[#16a34a] text-white font-black text-base sm:text-lg rounded-2xl shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 cursor-pointer transform active:scale-95 text-center"
                 id="buy-basic-btn"
               >
                 Quero o pacote básico
-              </button>
+              </a>
             </div>
           </div>
 
@@ -159,7 +161,7 @@ export default function Pricing({ onSelectPackage }: PricingProps) {
                 <div className="space-y-4 py-6">
                   <div className="flex items-start gap-2.5 text-[14px] font-bold text-gray-800 leading-snug">
                     <Check className="w-4 h-4 text-[#22c55e] shrink-0 mt-0.5 stroke-[3]" />
-                    <span>Tudo do Pacote Básico (+100 Dinâmicas + 100 Atividades) + 100 Atividades Bônus + Bônus Exclusivos</span>
+                    <span>Tudo do Pacote Básico (+50 Dinâmicas + 50 Atividades) + 50 Atividades Bônus + Bônus Exclusivos</span>
                   </div>
                   <div className="flex items-center gap-2.5 text-[14px] font-extrabold text-emerald-600">
                     <span className="text-lg leading-none shrink-0 font-black">∞</span>
@@ -205,13 +207,15 @@ export default function Pricing({ onSelectPackage }: PricingProps) {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => onSelectPackage('complete', 27.90)}
-                  className="w-full py-4 px-4 bg-[#22c55e] hover:bg-[#16a34a] text-white font-black text-base sm:text-lg rounded-2xl shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 cursor-pointer transform active:scale-95 text-center"
+                <a
+                  href="https://ggcheckout.app/checkout/v5/js0LEyuje4eXmc4N0w60"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-4 px-4 bg-[#22c55e] hover:bg-[#16a34a] text-white font-black text-base sm:text-lg rounded-2xl shadow-lg hover:shadow-emerald-500/20 transition-all duration-200 cursor-pointer transform active:scale-95 text-center"
                   id="buy-complete-btn"
                 >
                   Quero o Pacote Completo
-                </button>
+                </a>
               </div>
             </div>
           </div>
